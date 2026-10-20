@@ -1,0 +1,7 @@
+// Copy this file to supabase-config.js and add the public values from:
+// Supabase dashboard > Project settings > API.
+// Never use the service_role key in a browser.
+window.SUPABASE_CONFIG = {
+  url: "https://YOUR_PROJECT.supabase.co",
+  anonKey: "YOUR_PUBLIC_ANON_KEY"
+};

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d9488">
+  <meta name="description" content="A simple sales and expense dashboard for your shop.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%230d9488'/%3E%3Cpath d='M26 63h48M31 53l8-21h22l8 21M35 69v-6m30 6v-6' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <title>Ledgerly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="toast-region" aria-live="polite"></div>
+  <section id="auth-view" class="auth-shell">
+    <div class="auth-brand">
+      <div class="brand-mark">L</div>
+      <span>Ledgerly</span>
+    </div>
+    <div class="auth-card">
+      <div class="auth-heading">
+        <p class="eyebrow">Your shop, clearly managed</p>
+        <h1 id="auth-title">Welcome back</h1>
+        <p id="auth-subtitle">Sign in to see your shop performance.</p>
+      </div>
+      <form id="auth-form">
+        <label>Email address<input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+        <label>Password<input id="auth-password" type="password" autocomplete="current-password" required minlength="6" placeholder="At least 6 characters"></label>
+        <button class="button primary full" type="submit" id="auth-submit">Sign in</button>
+      </form>
+      <button class="text-button" id="auth-switch" type="button">New here? Create an account</button>
+      <p class="auth-note">Your data is securely stored in your Supabase database.</p>
+    </div>
+  </section>
+
+  <div id="app-view" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">L</div><span id="brand-name">Ledgerly</span></div>
+      <nav>
+        <button class="nav-item active" data-page="dashboard"><span>⌂</span> Overview</button>
+        <button class="nav-item" data-page="transactions"><span>↕</span> Transactions</button>
+        <button class="nav-item" data-page="reports"><span>▤</span> Reports</button>
+        <button class="nav-item" data-page="settings"><span>⚙</span> Settings</button>
+      </nav>
+      <div class="sidebar-footer"><div class="status-dot"></div><span>Synced with Supabase</span></div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><div class="brand-mark">L</div><strong id="mobile-brand-name">Ledgerly</strong></div>
+        <div class="topbar-actions"><button class="icon-button install-button hidden" id="install-button" title="Install app">⇩</button><button class="avatar" id="profile-button" title="Sign out">?</button></div>
+      </header>
+      <div class="page-container">
+        <section id="dashboard-page" class="page">
+          <div class="page-heading"><div><p class="eyebrow" id="greeting">Good morning</p><h1>Shop overview</h1><p class="muted">Here’s how your business is doing.</p></div><div class="button-row"><button class="button outline" data-open-transaction="expense">＋ Add expense</button><button class="button primary" data-open-transaction="sale">＋ Add sale</button></div></div>
+          <div class="date-toolbar"><button class="icon-button" id="previous-month">‹</button><strong id="month-label"></strong><button class="icon-button" id="next-month">›</button><button class="button subtle date-today" id="current-month">Today</button></div>
+          <div class="metric-grid">
+            <article class="metric-card teal"><div class="metric-icon">↗</div><p>Total sales</p><h2 id="metric-sales">—</h2><span id="sales-change" class="metric-trend">This month</span></article>
+            <article class="metric-card orange"><div class="metric-icon">↘</div><p>Total expenses</p><h2 id="metric-expenses">—</h2><span class="metric-trend">This month</span></article>
+            <article class="metric-card purple"><div class="metric-icon">◈</div><p>Net profit</p><h2 id="metric-profit">—</h2><span class="metric-trend">Sales minus expenses</span></article>
+            <article class="metric-card blue"><div class="metric-icon">#</div><p>Transactions</p><h2 id="metric-count">—</h2><span class="metric-trend">This month</span></article>
+          </div>
+          <div class="content-grid">
+            <article class="panel chart-panel"><div class="panel-heading"><div><h3>Performance</h3><p class="muted">Sales and expenses over the last 6 months</p></div><span class="legend"><i class="sales-legend"></i> Sales <i class="expense-legend"></i> Expenses</span></div><div class="chart-wrap"><canvas id="performance-chart" height="240"></canvas></div></article>
+            <article class="panel"><div class="panel-heading"><div><h3>Recent activity</h3><p class="muted">Your latest entries</p></div><button class="text-button" data-page-link="transactions">View all</button></div><div id="recent-list" class="activity-list"><div class="loading">Loading activity…</div></div></article>
+          </div>
+        </section>
+        <section id="transactions-page" class="page hidden">
+          <div class="page-heading"><div><p class="eyebrow">Your ledger</p><h1>Transactions</h1><p class="muted">Keep every sale and expense in one place.</p></div><div class="button-row"><button class="button outline" data-open-transaction="expense">＋ Expense</button><button class="button primary" data-open-transaction="sale">＋ Sale</button></div></div>
+          <div class="panel table-panel"><div class="table-toolbar"><div class="tabs"><button class="tab active" data-filter="all">All</button><button class="tab" data-filter="sale">Sales</button><button class="tab" data-filter="expense">Expenses</button></div><input id="transaction-search" class="search" type="search" placeholder="Search transactions…"></div><div class="table-scroll"><table><thead><tr><th>Description</th><th>Type</th><th>Category</th><th>Date</th><th class="align-right">Amount</th><th class="actions-heading">Actions</th></tr></thead><tbody id="transaction-rows"><tr><td colspan="6" class="empty-state">Loading transactions…</td></tr></tbody></table></div></div>
+        </section>
+        <section id="settings-page" class="page hidden">
+          <div class="page-heading"><div><p class="eyebrow">Workspace</p><h1>Settings</h1><p class="muted">Customize your shop information and preferences.</p></div></div>
+          <form id="settings-form" class="settings-form"><article class="panel settings-panel"><div class="panel-heading"><div><h3>Shop details</h3><p class="muted">This information appears across your dashboard.</p></div></div><div class="form-grid"><label>Shop name<input id="shop-name" required maxlength="80" placeholder="My shop"></label><label>Currency<select id="shop-currency"><option value="USD">USD — US Dollar</option><option value="GBP">GBP — Pound Sterling</option><option value="EUR">EUR — Euro</option><option value="INR">INR — Indian Rupee</option><option value="PKR">PKR — Pakistani Rupee</option><option value="AED">AED — UAE Dirham</option></select></label><label>Phone number<input id="shop-phone" type="tel" maxlength="30" placeholder="+1 555 000 0000"></label><label>Address<input id="shop-address" maxlength="160" placeholder="Shop address"></label></div><div class="settings-actions"><button class="button primary" type="submit">Save changes</button></div></article></form>
+          <article class="panel danger-panel"><div><h3>Account</h3><p class="muted">Signed in as <strong id="account-email"></strong></p></div><button class="button outline danger" id="sign-out">Sign out</button></article>
+        </section>
+        <section id="reports-page" class="page hidden">
+          <div class="page-heading"><div><p class="eyebrow">Business records</p><h1>Sales & expense reports</h1><p class="muted">Review, print, or save a professional report for your shop.</p></div><button class="button primary" id="print-report" type="button">⇩ Print report</button></div>
+          <div class="panel report-filters"><label>From<input id="report-from" type="date"></label><label>To<input id="report-to" type="date"></label><button class="button subtle" id="report-this-month" type="button">This month</button><button class="button primary" id="apply-report" type="button">Generate report</button></div>
+          <div id="report-document" class="report-document">
+            <header class="report-header"><div><div class="report-brand"><div class="brand-mark">L</div><strong id="report-shop-name">Ledgerly</strong></div><p id="report-shop-contact" class="muted"></p></div><div class="report-title"><h2>Sales & expense report</h2><p id="report-period"></p></div></header>
+            <div class="report-summary"><div><span>Total sales</span><strong id="report-sales">—</strong></div><div><span>Total expenses</span><strong id="report-expenses">—</strong></div><div><span>Net result</span><strong id="report-profit">—</strong></div><div><span>Entries</span><strong id="report-count">—</strong></div></div>
+            <div class="report-section"><h3>Sales</h3><div class="table-scroll"><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="align-right">Amount</th></tr></thead><tbody id="report-sales-rows"></tbody></table></div></div>
+            <div class="report-section"><h3>Expenses</h3><div class="table-scroll"><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="align-right">Amount</th></tr></thead><tbody id="report-expense-rows"></tbody></table></div></div>
+            <footer class="report-footer"><span id="report-footer-shop">Ledgerly</span><span>Generated <span id="report-generated"></span></span></footer>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="transaction-dialog"><form method="dialog" id="transaction-form"><div class="dialog-heading"><div><p class="eyebrow" id="transaction-eyebrow">New entry</p><h2 id="transaction-title">Add sale</h2></div><button class="icon-button close-dialog" type="button">×</button></div><input type="hidden" id="transaction-id"><input type="hidden" id="transaction-type" value="sale"><label>Description<input id="transaction-description" required maxlength="120" placeholder="What was this for?"></label><div class="form-grid"><label>Amount<input id="transaction-amount" type="number" step="0.01" min="0.01" required placeholder="0.00"></label><label>Date<input id="transaction-date" type="date" required></label></div><label>Category<select id="transaction-category"></select></label><label>Notes <span class="optional">(optional)</span><textarea id="transaction-notes" rows="3" maxlength="500" placeholder="Add a note…"></textarea></label><div class="dialog-actions"><button class="button subtle close-dialog" type="button">Cancel</button><button class="button primary" type="submit" id="transaction-submit">Save entry</button></div></form></dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
