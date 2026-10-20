@@ -1,1 +1,1 @@
-supabase-config.js
+# Never commit private Supabase database credentials or service-role keys.
