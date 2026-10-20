@@ -290,6 +290,13 @@
     if (choice.outcome === "accepted") showToast("Ledgerly is being installed");
   });
   window.addEventListener("appinstalled", () => { deferredInstall = null; $("install-button").classList.add("hidden"); showToast("Ledgerly installed"); });
-  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(error => console.warn("PWA registration failed", error)));
+  if ("serviceWorker" in navigator) window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("./sw.js");
+      await registration.update();
+    } catch (error) {
+      console.warn("PWA registration failed", error);
+    }
+  });
   boot();
 })();
