@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0d9488">
   <meta name="description" content="A simple sales and expense dashboard for your shop.">
-  <link rel="manifest" href="manifest.webmanifest">
+    <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%230d9488'/%3E%3Cpath d='M26 63h48M31 53l8-21h22l8 21M35 69v-6m30 6v-6' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <title>Ledgerly</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,8 +49,8 @@
     </aside>
     <main class="main-content">
       <header class="topbar">
-        <div class="mobile-brand"><div class="brand-mark">L</div><strong id="mobile-brand-name">Ledgerly</strong></div>
-        <div class="topbar-actions"><button class="icon-button install-button hidden" id="install-button" title="Install app">⇩</button><button class="avatar" id="profile-button" title="Sign out">?</button></div>
+        <div class="mobile-header-left"><button class="mobile-menu-button" id="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="mobile-brand"><div class="brand-mark">L</div><strong id="mobile-brand-name">Ledgerly</strong></div></div>
+        <div class="topbar-actions"><button class="icon-button install-button" id="install-button" title="Install Ledgerly">⇩</button><button class="avatar" id="profile-button" title="Sign out">?</button></div>
       </header>
       <div class="page-container">
         <section id="dashboard-page" class="page">
@@ -90,6 +90,7 @@
       </div>
     </main>
   </div>
+  <div class="mobile-menu-backdrop hidden" id="mobile-menu-backdrop"></div>
 
   <dialog id="transaction-dialog"><form method="dialog" id="transaction-form"><div class="dialog-heading"><div><p class="eyebrow" id="transaction-eyebrow">New entry</p><h2 id="transaction-title">Add sale</h2></div><button class="icon-button close-dialog" type="button">×</button></div><input type="hidden" id="transaction-id"><input type="hidden" id="transaction-type" value="sale"><label>Description<input id="transaction-description" required maxlength="120" placeholder="What was this for?"></label><div class="form-grid"><label>Amount<input id="transaction-amount" type="number" step="0.01" min="0.01" required placeholder="0.00"></label><label>Date<input id="transaction-date" type="date" required></label></div><label>Category<select id="transaction-category"></select></label><label>Notes <span class="optional">(optional)</span><textarea id="transaction-notes" rows="3" maxlength="500" placeholder="Add a note…"></textarea></label><div class="dialog-actions"><button class="button subtle close-dialog" type="button">Cancel</button><button class="button primary" type="submit" id="transaction-submit">Save entry</button></div></form></dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

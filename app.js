@@ -206,6 +206,13 @@
     document.querySelectorAll(".page").forEach(section => section.classList.toggle("hidden", section.id !== `${page}-page`));
     document.querySelectorAll(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.page === page));
     if (page === "reports") renderReport();
+    closeMobileMenu();
+  }
+
+  function closeMobileMenu() {
+    $("mobile-menu-backdrop").classList.add("hidden");
+    $("sidebar").classList.remove("mobile-open");
+    $("mobile-menu-button").setAttribute("aria-expanded", "false");
   }
 
   async function boot() {
@@ -235,7 +242,14 @@
     $("auth-subtitle").textContent = signup ? "Start tracking your shop in minutes." : "Sign in to see your shop performance.";
     $("auth-switch").textContent = signup ? "Already have an account? Sign in" : "New here? Create an account";
   });
+  document.querySelector(".sidebar").id = "sidebar";
   document.querySelectorAll(".nav-item").forEach(button => button.addEventListener("click", () => switchPage(button.dataset.page)));
+  $("mobile-menu-button").addEventListener("click", () => {
+    const isOpen = $("sidebar").classList.toggle("mobile-open");
+    $("mobile-menu-backdrop").classList.toggle("hidden", !isOpen);
+    $("mobile-menu-button").setAttribute("aria-expanded", String(isOpen));
+  });
+  $("mobile-menu-backdrop").addEventListener("click", closeMobileMenu);
   document.querySelectorAll("[data-page-link]").forEach(button => button.addEventListener("click", () => switchPage(button.dataset.pageLink)));
   document.querySelectorAll("[data-open-transaction]").forEach(button => button.addEventListener("click", () => openTransaction(button.dataset.openTransaction)));
   document.querySelectorAll(".close-dialog").forEach(button => button.addEventListener("click", () => document.getElementById("transaction-dialog").close()));
@@ -264,7 +278,18 @@
   $("profile-button").addEventListener("click", () => client.auth.signOut());
   window.addEventListener("resize", () => { if (!appView.classList.contains("hidden")) drawChart(); });
   window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); deferredInstall = event; $("install-button").classList.remove("hidden"); });
-  $("install-button").addEventListener("click", async () => { if (!deferredInstall) return; deferredInstall.prompt(); deferredInstall = null; $("install-button").classList.add("hidden"); });
+  $("install-button").addEventListener("click", async () => {
+    if (!deferredInstall) {
+      showToast("Use your browser menu and choose Install Ledgerly or Add to Home Screen.");
+      return;
+    }
+    deferredInstall.prompt();
+    const choice = await deferredInstall.userChoice;
+    deferredInstall = null;
+    $("install-button").classList.add("hidden");
+    if (choice.outcome === "accepted") showToast("Ledgerly is being installed");
+  });
+  window.addEventListener("appinstalled", () => { deferredInstall = null; $("install-button").classList.add("hidden"); showToast("Ledgerly installed"); });
   if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(error => console.warn("PWA registration failed", error)));
   boot();
 })();
